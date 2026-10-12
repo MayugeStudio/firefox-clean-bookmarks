@@ -2,8 +2,10 @@
 
 ## Project
 
-`firefox-clean-tab` is a Firefox extension (WebExtension) for personal use.
+`firefox-clean-bookmarks` is a Firefox extension (WebExtension) for personal use.
 It is not planned to be published on addons.mozilla.org.
+
+Goal: organize bookmark folders by assigning colors to them.
 
 ## Tech stack
 
@@ -33,5 +35,5 @@ For manual loading: open `about:debugging#/runtime/this-firefox` → "Load Tempo
 
 ## Git
 
-- Repository: https://github.com/MayugeStudio/firefox-clean-tab (public)
+- Repository: https://github.com/MayugeStudio/firefox-clean-bookmarks (public)
 - Do not commit secrets or build artifacts (`web-ext-artifacts/`).
