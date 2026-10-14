@@ -2,31 +2,52 @@
 
 ## Project
 
-`firefox-clean-bookmarks` is a Firefox extension (WebExtension) for personal use.
-It is not planned to be published on addons.mozilla.org.
+`firefox-clean-bookmarks` customizes Firefox for personal use.
 
 Goal: organize bookmark folders by assigning colors to them.
 
-## Tech stack
+This is done with `userChrome.css`, not a WebExtension, because the WebExtensions API cannot style Firefox's native bookmark UI.
 
-- Plain JavaScript, HTML, CSS (no framework, no bundler unless really needed)
-- WebExtensions API (`browser.*` namespace, Promise-based)
-- [`web-ext`](https://github.com/mozilla/web-ext) for running and linting
+## Config
 
-## Commands
+Edit `folders.conf` (UTF-8), one folder per line:
 
-```sh
-npx web-ext run    # Launch Firefox with the extension loaded
-npx web-ext lint   # Validate manifest and source
-npx web-ext build  # Create a zip in web-ext-artifacts/
+```
+<folder name>=<color>
 ```
 
-For manual loading: open `about:debugging#/runtime/this-firefox` → "Load Temporary Add-on…" → select `manifest.json`.
+- The folder name must match exactly (case-sensitive).
+- Lines starting with `#` are comments.
+- `chrome/userChrome.css` is generated from it by the install scripts. Do not edit it by hand (it is gitignored).
+
+## Setup
+
+macOS:
+
+```sh
+./install.sh             # Use the default profile
+./install.sh <profile>   # Use a specific profile ("Root Directory" in about:profiles)
+```
+
+Windows:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File install.ps1
+powershell -ExecutionPolicy Bypass -File install.ps1 -ProfileDir <profile>
+```
+
+Both scripts are idempotent. They:
+
+- generate `chrome/userChrome.css` from `folders.conf` and put it into `<profile>/chrome/`
+  - macOS: as a symlink.
+  - Windows: as a copy.
+- add `toolkit.legacyUserProfileCustomizations.stylesheets = true` to `<profile>/user.js`
+
+Re-run after editing `folders.conf` or moving this repository. Restart Firefox to apply, because `userChrome.css` is read only at startup.
 
 ## Coding rules
 
 - Keep it simple (KISS). Avoid over-engineering and unnecessary abstractions.
-- Request only the minimum permissions in `manifest.json`.
 - Where to write what:
   - Code: **How**
   - Test code: **What**
@@ -36,4 +57,4 @@ For manual loading: open `about:debugging#/runtime/this-firefox` → "Load Tempo
 ## Git
 
 - Repository: https://github.com/MayugeStudio/firefox-clean-bookmarks (public)
-- Do not commit secrets or build artifacts (`web-ext-artifacts/`).
+- Do not commit secrets.
